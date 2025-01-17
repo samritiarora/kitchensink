@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Member Details</title>
+</head>
+<body>
+<h1>Member Details</h1>
+
+<div>
+    <p><strong>ID:</strong> <span th:text="${member.id}"></span></p>
+    <p><strong>Name:</strong> <span th:text="${member.name}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${member.email}"></span></p>
+    <p><strong>Phone:</strong> <span th:text="${member.phoneNumber}"></span></p>
+</div>
+</body>
+</html>

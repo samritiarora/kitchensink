@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Index Page111</title>
+</head>
+<body>
+<h1>Welcome to the Index Page</h1>
+
+<!-- Content for unauthenticated users -->
+<div sec:authorize="isAnonymous()">
+    <p>You are not logged in. <a th:href="@{/auth/login}">Login</a> or <a th:href="@{/auth/signup}">Sign Up</a></p>
+</div>
+
+<!-- Content for authenticated users -->
+<div sec:authorize="isAuthenticated()">
+    <p>Welcome back, <span sec:authentication="name">[Guest]</span>!
+    </p>
+    <!-- Logged-in user information -->
+    <p>Roles: <span sec:authentication="principal.authorities">[None]</span></p>
+    <a th:href="@{/auth/logout}">Logout</a>
+
+    <!-- Content for administrators -->
+    <div sec:authorize="hasRole('ADMIN')">
+        This content is only shown to administrators.
+        <a th:href="@{/members}">View & add members</a>
+    </div>
+
+    <!-- Content for regular users -->
+    <div sec:authorize="hasRole('USER')">
+        This content is only shown to users.
+    </div>
+    <a th:href="@{'/members/' + ${#authentication.principal?.username}}">View Your Details</a>
+
+</div>
+
+
+</body>
+</html>
