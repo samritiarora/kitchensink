@@ -14,4 +14,5 @@ public class Util {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority).toList();
     }
+
 }

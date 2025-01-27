@@ -1,6 +1,7 @@
 package com.mongo.challenge.kitchensink.service.impl;
 
 import com.mongo.challenge.kitchensink.dto.Member;
+import com.mongo.challenge.kitchensink.dto.MemberDto;
 import com.mongo.challenge.kitchensink.entity.MemberEntity;
 import com.mongo.challenge.kitchensink.exception.MemberNotFoundException;
 import com.mongo.challenge.kitchensink.mapper.MemberMapper;
@@ -40,7 +41,9 @@ public class MemberService implements IMemberService {
 
     @Override
     public List<Member> getMembers() {
-        return memberRepository.findAll().stream().map(memberMapper::toDto).collect(Collectors.toList());
+        String currentUser = Util.getUser();
+        return memberRepository.findAll().stream().filter(user -> !user.getEmail().equalsIgnoreCase(currentUser))
+                .map(memberMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -49,10 +52,30 @@ public class MemberService implements IMemberService {
                 orElseThrow(MemberNotFoundException::new);
 
         if (!Util.getAuthorities().contains("ROLE_ADMIN") &&
-                !memberEntity.getEmail( ).equals(Util.getUser())) {
+                !memberEntity.getEmail().equals(Util.getUser())) {
             throw new AccessDeniedException("Access denied");
         }
         return memberMapper.toDto(memberEntity);
+    }
+
+    @Override
+    public void updateMember(MemberDto member) {
+        MemberEntity memberEntity = memberRepository.findByEmail(member.getEmail()).
+                orElseThrow(MemberNotFoundException::new);
+
+        if (!Util.getAuthorities().contains("ROLE_ADMIN") &&
+                !memberEntity.getEmail().equals(Util.getUser())) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        memberEntity.setName(member.getName());
+        memberEntity.setPhoneNumber(member.getPhoneNumber());
+        memberRepository.save(memberEntity);
+    }
+
+    @Override
+    public void deleteMember(String email) {
+        memberRepository.deleteByEmail(email);
     }
 
 }

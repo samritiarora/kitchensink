@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface MemberRepository extends MongoRepository<MemberEntity, String> {
     Optional<MemberEntity> findByEmail(String email);
+
+    void deleteByEmail(String email);
 }
